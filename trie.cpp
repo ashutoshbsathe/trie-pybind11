@@ -12,6 +12,30 @@ Trie::Trie() { root = new TrieNode(); }
 
 Trie::~Trie() { delete root; }
 
+PyTrieNode::PyTrieNode(TrieNode *ptr) : node_ptr(ptr) {}
+
+PyTrieNode PyTrieNode::get_child(char32_t c) const {
+  if (!node_ptr) {
+    return PyTrieNode(nullptr);
+  }
+  auto it = node_ptr->children.find(c);
+  if (it != node_ptr->children.end()) {
+    return PyTrieNode(it->second);
+  } else {
+    return PyTrieNode(nullptr);
+  }
+}
+
+bool PyTrieNode::is_terminal() const {
+  return node_ptr ? node_ptr->terminal : false;
+}
+
+size_t PyTrieNode::get_subtree_node_count() const {
+  return node_ptr ? node_ptr->count : 0;
+}
+
+bool PyTrieNode::is_valid() const { return node_ptr != nullptr; }
+
 void Trie::add_string(const std::string &string) {
   // UTF-8 adds a bit of complexity, but it's alright
   const char *curr_char_ptr = string.c_str();
@@ -87,4 +111,10 @@ size_t Trie::get_total_node_count() const { return root ? root->count : 0; }
 bool Trie::contains_string(const std::string &string) const {
   TrieNode *node = traverse_along_string(string);
   return (node != nullptr) && node->terminal;
+}
+
+PyTrieNode Trie::get_root_node() const { return PyTrieNode(root); }
+
+PyTrieNode Trie::traverse_along_prefix(const std::string &prefix) const {
+  return PyTrieNode(traverse_along_string(prefix));
 }
