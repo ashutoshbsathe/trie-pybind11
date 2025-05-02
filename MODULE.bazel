@@ -1,0 +1,9 @@
+# bazel_dep(name = "rules_java", version = "8.11.0")  # Or your current version
+#
+# java = use_extension("@rules_java//java:extensions.bzl", "java")
+#
+# java.register_toolchains(
+#     version = "17",  # or "11", "21" depending on what you need
+# )
+
+bazel_dep(name = "rules_cc", version = "0.0.17")
